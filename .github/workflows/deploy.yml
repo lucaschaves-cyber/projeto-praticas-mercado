@@ -1,0 +1,63 @@
+name: Deploy Laravel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy na AWS
+        uses: appleboy/ssh-action@v1.2.0
+
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+            cd /var/www/sistema
+
+            git pull origin main
+
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            php artisan migrate --force
+
+            php artisan optimize:clear
+
+            sudo systemctl restart nginxname: Deploy Laravel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy na AWS
+        uses: appleboy/ssh-action@v1.2.0
+
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+            cd /var/www/sistema
+
+            git pull origin main
+
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            php artisan migrate --force
+
+            php artisan optimize:clear
+
+            sudo systemctl restart nginx
